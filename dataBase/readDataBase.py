@@ -1,27 +1,29 @@
 import os
-from dotenv import load_dotenv
-import psycopg2
+import dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import declarative_base, Session
 
-try:
-    load_dotenv()
-    
-    dbname = os.getenv("DBName")
+Base = declarative_base()
+
+def readDataBase() -> Session:
+    dotenv.load_dotenv()
     user = os.getenv("user")
     password = os.getenv("password")
     host = os.getenv("host")
     port = os.getenv("port")
+    dbname = os.getenv("DBName")
+    
+    # Cambia la cadena de conexión para PostgreSQL
+    engine = create_engine(f'postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}')
 
-    print(f"DBName: {dbname}, User: {user}, Host: {host}, Port: {port}")
+    # Crear todas las tablas en el motor. Esto es equivalente a las sentencias "Create Table" en SQL.
+    Base.metadata.create_all(engine)
 
-    conn = psycopg2.connect(
-        dbname=dbname,
-        user=user,
-        password=password,
-        host=host,
-        port=port
-    )
+    # Crear un objeto sessionmaker
+    Session = sessionmaker(bind=engine)
 
-    print("Database opened successfully")
-except Exception as e:
-    print("I am unable to connect to the database")
-    print(e)
+    # Crear una sesión
+    session = Session()
+
+    return session
