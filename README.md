@@ -36,7 +36,7 @@ El Gestor de Inventario es un sistema de escritorio diseñado para ayudar a las 
 
 5. Iniciar la aplicación:
     ```
-    python main.py
+    python main.pyw
     ```
 
 ## Uso
