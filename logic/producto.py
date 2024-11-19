@@ -31,3 +31,8 @@ def UpdateProduct(id: int, name: str, descrition:str , price: float, cantidad:in
     Query = text(f"UPDATE productos SET nombre = '{name}', descripcion = '{descrition}', precio = {price}, cantidad={cantidad} WHERE id = {id}")
     session.execute(Query)
     session.commit()
+
+def FindProduct(name: str) -> Sequence[Row[Any]]:
+    Query = text(f"SELECT * FROM productos WHERE nombre = '{name}'")
+    result = session.execute(Query).fetchall()
+    return result
